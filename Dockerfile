@@ -1,5 +1,9 @@
 FROM python:3.12.4-slim-bookworm AS builder
 
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /build
 
 COPY app/requirements.txt .
@@ -9,6 +13,10 @@ RUN pip install --no-cache-dir \
     -r requirements.txt
 
 FROM python:3.12.4-slim-bookworm
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -r appuser && \
     useradd -r -g appuser appuser
