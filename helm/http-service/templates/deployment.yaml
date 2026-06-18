@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: http-service
+  template:
+    metadata:
+      labels:
+        app: http-service
+    spec:
+      containers:
+      - name: http-service
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 8080
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
